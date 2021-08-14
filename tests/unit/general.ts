@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { CloudAPISDK } from '../../api';
 import { cliArguments } from 'cli-argument-parser';
 import { MockServer } from 'dmock-server';
+import { AxiosResponse } from 'axios';
 
 const server = new MockServer({
     hostname: cliArguments.ENVIRONMENT,
