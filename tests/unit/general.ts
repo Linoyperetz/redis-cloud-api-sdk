@@ -26,6 +26,11 @@ describe('Testing general functions', async function() {
     it('getAccountInformation', async () => {
         const accountInformation = await client.getAccountInformation();
         expect(accountInformation.key.accountId).to.eql(123, 'Account id');
+        const res = await client.req({
+            method: 'get',
+            url: '/'
+        }) as AxiosResponse
+        expect(res.data.account.key.accountId).to.eql(123, 'Account id');
     }); 
     it('getDataPersistences', async () => {
         const dataPersistenceList = await client.getDataPersistences();

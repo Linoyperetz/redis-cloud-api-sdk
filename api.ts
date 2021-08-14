@@ -1,4 +1,4 @@
-import Axios, { AxiosInstance } from 'axios';
+import Axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { CreateSubscriptionParameters, SubscriptionUpdateParameters, CidrUpdateParameters, VpcPeeringCreationParameters } from './types/parameters/subscription';
 import { DatabaseImportParameters, DatabaseCreationParameters, DatabaseUpdateParameters } from './types/parameters/database';
 import { CloudAccountCreationParameters, CloudAccountUpdateParameters } from './types/parameters/cloud-account';
@@ -9,10 +9,10 @@ import { Task, TaskResponse, TaskStatus } from './types/task';
 import { Database, DatabaseStatus } from './types/responses/database';
 
 export class CloudAPISDK {
-    private protocol: string = 'https';
-    private domain: string = 'api.redislabs.com';
-    private version: string = 'v1';
-    private debug: boolean = false;
+    private protocol = 'https';
+    private domain = 'api.redislabs.com';
+    private version = 'v1';
+    private debug = false;
     private accessKey: string
     private secretKey: string
     private httpClient: AxiosInstance
@@ -39,18 +39,56 @@ export class CloudAPISDK {
         })
     }
 
+    /**
+     * Performing a dynamic request for additional actions
+     * @param params The Axios configuration parameters
+     * @returns 
+     */
+    async req(params: AxiosRequestConfig) {
+        try {
+            const res = await this.httpClient.request(params);
+            return this.handleResponse(res);
+        } catch(error) {
+            return this.handleError(error);
+        }
+    }
+
+    /**
+     * Parsing the response
+     * @param res A given Axios response
+     * @returns A response
+     */
+    handleResponse(res: AxiosResponse) {
+        return res.data;
+    }
+
+    /**
+     * Parsing an error
+     * @param res A given Axios error
+     * @returns An error
+     */
+    handleError(res: AxiosError) {
+        return res;
+    }
+
     //Account related requests
     /**
      * Returning current account and related information
      */
-    async getAccountInformation(): Promise<AccountInformation & {[key: string]: any}> {
-        try {
-            const response = await this.httpClient.get('/');
-            return response.data.account;
-        }
-        catch(error) {
-            return error;
-        }
+    async getAccountInformation() {
+        //:Promise<AccountInformation & {[key: string]: any}> {
+        //try {
+        //    const response = await this.httpClient.get('/');
+        //    return response.data.account;
+        //}
+        //catch(error) {
+        //    return error;
+        //}
+        const res = await this.req({
+            method: 'get',
+            url: '/',
+        })
+        return res as AccountInformation;
     }
     
     /**
